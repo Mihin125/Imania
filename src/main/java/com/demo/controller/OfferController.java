@@ -32,11 +32,7 @@ public class OfferController {
     public List<Offer> searchOffer(@RequestBody SearchOfferDto filter){
         return offerService.searchOffer(filter);
     }
-
-    @PutMapping("/update/{offerId}")
-    public HttpStatus updateOffer(@PathVariable long offerId,@RequestBody SaveOfferDto updateOfferDto){ return offerService.updateOffer(offerId,updateOfferDto);
-    }
-
+    
     @GetMapping("/{userId}")
     public List<Offer> getOffersByUserId(@PathVariable long userId){ return offerService.getOfferByUserId(userId);
     }

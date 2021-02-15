@@ -3,6 +3,7 @@ package com.demo.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.tomcat.jni.Local;
 
 
 import javax.persistence.*;
@@ -16,21 +17,15 @@ public class Offer {
     @Id
     @GeneratedValue
     private long id;
-    private String modelName;
-    private String description;
-    private DeviceCategory category;
-    private ConditionCategory conditionCategory;
-    private double price;
+    private String position;
+    private String companyName;
+    private  WorkingNature workingNature;
+    private Category category;
     @ManyToOne
     private User user;
-    //@JsonIgnore
-    @ManyToOne
-    private City city;
-    private int contactNumber1;
-    private int contactNumber2;
     private String photo;
-    private int viewCount;
     private LocalDateTime postedDate;
+    private LocalDateTime expiredDate;
     private OfferStatus offerStatus;
     @ManyToOne
     private District district;
@@ -38,27 +33,24 @@ public class Offer {
     @OneToMany(mappedBy = "offer")
     private List<ReportOffer> reports;
 
-    public Offer(long id, String modelName, String description, DeviceCategory category, ConditionCategory conditionCategory, double price, User user,District district, int contactNumber1, int contactNumber2, String photo, int viewCount, LocalDateTime postedDate, OfferStatus offerStatus, City city) {
+    public Offer(long id, String position, String companyName, WorkingNature workingNature, Category category, User user, String photo, LocalDateTime expiredDate, LocalDateTime postedDate, OfferStatus offerStatus, District district, List<ReportOffer> reports) {
         this.id = id;
-        this.modelName = modelName;
-        this.description = description;
+        this.companyName = companyName;
+        this.position=position;
+        this.workingNature = workingNature;
         this.category = category;
-        this.conditionCategory = conditionCategory;
-        this.price = price;
         this.user = user;
-        List<Offer> offerList = user.getOffers();
-        offerList.add(this);
-        user.setOffers(offerList);
-        this.city = city;
-        this.district = district;
-        this.contactNumber1 = contactNumber1;
-        this.contactNumber2 = contactNumber2;
         this.photo = photo;
-        this.viewCount = viewCount;
         this.postedDate = postedDate;
         this.offerStatus = offerStatus;
         this.district = district;
+        this.expiredDate =expiredDate;
+        this.reports = reports;
+        List<Offer> offerList = user.getOffers();
+        offerList.add(this);
+        user.setOffers(offerList);
     }
+
 
     public Offer() {
     }

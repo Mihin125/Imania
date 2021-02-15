@@ -1,7 +1,7 @@
 package com.demo.dto;
 
-import com.demo.model.ConditionCategory;
-import com.demo.model.DeviceCategory;
+import com.demo.model.Category;
+import com.demo.model.WorkingNature;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,10 +9,9 @@ import lombok.Setter;
 @Setter
 public class SearchOfferDto {
     private String keyword;
-    private DeviceCategory category;
-    private ConditionCategory conditionCategory;
-    private double priceRangeUpper;
-    private double priceRangeLower;
-    private String city;
+    private String companyName;
+    private WorkingNature workingNature;
+    private Category category;
     private String district;
+    private String sortedBy;
 }

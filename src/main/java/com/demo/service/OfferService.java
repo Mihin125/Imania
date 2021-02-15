@@ -17,7 +17,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OfferService {
@@ -36,17 +38,16 @@ public class OfferService {
 
     public HttpStatus saveOffer(SaveOfferDto offerDto) {
         Offer offer = new Offer();
-        offer.setModelName(offerDto.getModelName());
+        offer.setCompanyName(offerDto.getCompanyName());
         offer.setCategory(offerDto.getCategory());
-        offer.setConditionCategory(offerDto.getConditionCategory());
-        offer.setDescription(offerDto.getDescription());
-        offer.setPrice(offerDto.getPrice());
+        offer.setWorkingNature(offerDto.getWorkingNature());
+        offer.setPosition(offerDto.getPositions());
         offer.setPhoto(offerDto.getPhoto());
-        offer.setContactNumber1(offerDto.getContactNumber1());
-        offer.setContactNumber2(offerDto.getContactNumber2());
         offer.setDistrict(districtService.findDistrictByDistrictName(offerDto.getDistrict()));
-        offer.setCity(cityService.findCityByCityName(offerDto.getCity()));
         offer.setUser(userService.findById(offerDto.getUser()));
+        offer.setPostedDate(offerDto.getPostedDate());
+        offer.setExpiredDate(offerDto.getExpiredDate());
+
         if (offerRepository.save(offer) != null)
             return HttpStatus.OK;
         return HttpStatus.BAD_REQUEST;
@@ -56,28 +57,24 @@ public class OfferService {
     public Offer findById(Long offerId){
         return offerRepository.findById(offerId).orElseThrow(NullPointerException::new);
     }
-
-    public HttpStatus updateOffer(long offerId,SaveOfferDto updateDto){
-        try{
-            findById(offerId);
-        }catch (NullPointerException ex){
-            return HttpStatus.NOT_FOUND;
-        }
-        Offer updatedOffer = findById(offerId);
-        updatedOffer.setId(offerId);
-
-        if(updateDto.getModelName()!=null)updatedOffer.setModelName(updateDto.getModelName());
-        if(updateDto.getCategory()!=null)updatedOffer.setCategory(updateDto.getCategory());
-        if(updateDto.getDescription()!=null)updatedOffer.setDescription(updateDto.getDescription());
-        if(updateDto.getConditionCategory()!=null)updatedOffer.setConditionCategory(updateDto.getConditionCategory());
-        if(updateDto.getPrice()!=0.0)updatedOffer.setPrice(updateDto.getPrice());
-        if(updateDto.getCity()!=null)updatedOffer.setCity(cityService.findCityByCityName(updateDto.getCity()));
-        if(updateDto.getContactNumber1()!=0)updatedOffer.setContactNumber1(updateDto.getContactNumber1());
-        if(updateDto.getContactNumber2()!=0)updatedOffer.setContactNumber2(updateDto.getContactNumber2());
-
-        offerRepository.save(updatedOffer);
-        return HttpStatus.OK;
-    }
+//
+//    public HttpStatus updateOffer(long offerId,SaveOfferDto updateDto){
+//        try{
+//            findById(offerId);
+//        }catch (NullPointerException ex){
+//            return HttpStatus.NOT_FOUND;
+//        }
+//        Offer updatedOffer = findById(offerId);
+//        updatedOffer.setId(offerId);
+//
+//        if(updateDto.getCompanyName()!=null)updatedOffer.setCompanyName(updateDto.getCompanyName());
+//        if(updateDto.getCategory()!=null)updatedOffer.setCategory(updateDto.getCategory());
+//        if(updateDto.getPositions()!=null)updatedOffer.setPosition(updateDto.getPositions());
+//        if(updateDto.getCategory()!=null)updatedOffer.setCategory(updateDto.getCategory());
+//
+//        offerRepository.save(updatedOffer);
+//        return HttpStatus.OK;
+//    }
 
 
     public List<Offer> searchOffer(SearchOfferDto filter){
@@ -89,29 +86,28 @@ public class OfferService {
                 List<Predicate> predicates = new ArrayList<>();
 
                 if (filter.getKeyword() != null) {
-                    predicates.add(cb.like(root.get("modelName"), filter.getKeyword()+"%"));
+                    predicates.add(cb.like(root.get("position"), filter.getKeyword()+"%"));
                 }
-                if (filter.getPriceRangeUpper() != 0.0) {
-                    predicates.add(cb.lessThanOrEqualTo(root.get("price"),filter.getPriceRangeUpper()));
-                }
-                if (filter.getPriceRangeLower() != 0.0) {
-                    predicates.add(cb.greaterThanOrEqualTo(root.get("price"),filter.getPriceRangeLower()));
+                if (filter.getCompanyName() != null) {
+                    predicates.add(cb.like(root.get("companyName"), filter.getKeyword()+"%"));
                 }
                 if(filter.getCategory()!= null){
                     predicates.add(cb.equal(root.get("category"),filter.getCategory()));
                 }
-                if(filter.getConditionCategory()!= null){
-                    predicates.add(cb.equal(root.get("conditionCategory"),filter.getConditionCategory()));
+                if(filter.getWorkingNature()!= null){
+                    predicates.add(cb.equal(root.get("workingNature"),filter.getWorkingNature()));
                 }
                 if(filter.getDistrict()!= null){
-                    predicates.add(cb.equal(root.get("location"),districtService.findDistrictByDistrictName(filter.getDistrict())));
-                }
-                if(filter.getCity()!= null){
-                    predicates.add(cb.equal(root.get("location"),cityService.findCityByCityName(filter.getCity())));
+                    predicates.add(cb.equal(root.get("district"),districtService.findDistrictByDistrictName(filter.getDistrict())));
                 }
                 return cb.and(predicates.toArray(new Predicate[0]));
             }
         });
+        switch (filter.getSortedBy()){
+            case "Newest first": return offers.stream().sorted(Comparator.comparing(Offer::getPostedDate).reversed()).collect(Collectors.toList());
+            case "Oldest first": return offers.stream().sorted(Comparator.comparing(Offer::getPostedDate)).collect(Collectors.toList());
+
+        }
         return offers;
     }
     public void deleteOffer(long offerId){

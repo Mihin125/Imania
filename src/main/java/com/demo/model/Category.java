@@ -1,5 +1,5 @@
 package com.demo.model;
 
-public enum ConditionCategory {
+public enum Category {
     NEW, USED, REFURBISHED
 }

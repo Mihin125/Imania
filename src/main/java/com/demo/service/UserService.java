@@ -45,7 +45,6 @@ public class UserService {
                 user.setFirstName(userDto.getFirstName());
                 user.setLastName(user.getLastName());
                 user.setDistrict(districtService.findDistrictByDistrictName(userDto.getDistrict()));
-                user.setCity(cityService.findCityByCityName(userDto.getCity()));
                 user.setRoles(userDto.getRole().stream().map(x->userRoleService.findByName(x)).collect(Collectors.toList()));
                 BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder(12);
                 String password =bCryptPasswordEncoder.encode(userDto.getPassword());
@@ -70,7 +69,6 @@ public class UserService {
         if(updateUserDto.getPassword()!=null)user.setPassword(updateUserDto.getPassword());
         if(updateUserDto.getContactNumber()!=null)user.setContactNumber(updateUserDto.getContactNumber());
         if(updateUserDto.getDistrict()!=null)user.setDistrict(districtService.findDistrictByDistrictName(updateUserDto.getDistrict()));
-        if(updateUserDto.getCity()!=null)user.setCity(cityService.findCityByCityName(updateUserDto.getCity()));
         if(updateUserDto.getEmail()!=null)user.setEmail(updateUserDto.getEmail());
         userRepository.save(user);
         return HttpStatus.OK;
