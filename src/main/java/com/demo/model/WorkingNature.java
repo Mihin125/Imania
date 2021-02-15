@@ -1,5 +1,5 @@
 package com.demo.model;
 
 public enum WorkingNature {
-    IPHONE, IPAD, IMAC, MACBOOK, WATCH, ACCESSORIES
+    FULL_TIME, PART_TIME
 }

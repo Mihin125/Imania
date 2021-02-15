@@ -22,8 +22,6 @@ public class UserService {
     @Autowired
     DistrictService districtService;
     @Autowired
-    CityService cityService;
-    @Autowired
     BlackListService blackListService;
     @Autowired
     OfferService offerService;
@@ -34,16 +32,15 @@ public class UserService {
         User existingUser = findByEmail(userDto.getEmail());
         if(blackListService.findByEmail(userDto.getEmail())!=null)return HttpStatus.FORBIDDEN;
         if (existingUser!=null)return HttpStatus.BAD_REQUEST;
-        if(userDto.getFirstName()!=null &&
-                userDto.getLastName()!=null &&
+        if(userDto.getCompanyName()!=null &&
+                userDto.getAddress()!=null &&
                 userDto.getDistrict()!=null&&
-                userDto.getCity() != null &&
                 userDto.getContactNumber()!=null &&
                 userDto.getPassword()!= null ) {
 
                 User user=new User();
-                user.setFirstName(userDto.getFirstName());
-                user.setLastName(user.getLastName());
+                user.setCompanyName(userDto.getCompanyName());
+                user.setAddress(user.getAddress());
                 user.setDistrict(districtService.findDistrictByDistrictName(userDto.getDistrict()));
                 user.setRoles(userDto.getRole().stream().map(x->userRoleService.findByName(x)).collect(Collectors.toList()));
                 BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder(12);
@@ -64,8 +61,8 @@ public class UserService {
             return HttpStatus.NOT_FOUND;
         }
         User user = findById(userId);
-        if(updateUserDto.getFirstName()!=null)user.setFirstName(updateUserDto.getFirstName());
-        if(updateUserDto.getLastName()!=null)user.setLastName(updateUserDto.getLastName());
+        if(updateUserDto.getCompanyName()!=null)user.setCompanyName(updateUserDto.getCompanyName());
+        if(updateUserDto.getAddress()!=null)user.setAddress(updateUserDto.getAddress());
         if(updateUserDto.getPassword()!=null)user.setPassword(updateUserDto.getPassword());
         if(updateUserDto.getContactNumber()!=null)user.setContactNumber(updateUserDto.getContactNumber());
         if(updateUserDto.getDistrict()!=null)user.setDistrict(districtService.findDistrictByDistrictName(updateUserDto.getDistrict()));
@@ -78,7 +75,7 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(NullPointerException::new);
     }
 
-    public User findByusername(String username){
+    public User findByUsername(String username){
         return userRepository.findByUsername(username);
     }
 

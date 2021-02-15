@@ -16,8 +16,8 @@ public class User {//(mappedBy = "category", cascade = CascadeType.ALL, orphanRe
     @Id
     @GeneratedValue
     long id;
-    private String firstName;
-    private String lastName;
+    private String companyName;
+    private String address;
     @JsonIgnore
     private String password;
     //@JsonIgnore

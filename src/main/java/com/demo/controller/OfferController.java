@@ -32,7 +32,7 @@ public class OfferController {
     public List<Offer> searchOffer(@RequestBody SearchOfferDto filter){
         return offerService.searchOffer(filter);
     }
-    
+
     @GetMapping("/{userId}")
     public List<Offer> getOffersByUserId(@PathVariable long userId){ return offerService.getOfferByUserId(userId);
     }

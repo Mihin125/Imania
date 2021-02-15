@@ -33,8 +33,6 @@ public class OfferService {
     RedListService redListService;
     @Autowired
     DistrictService districtService;
-    @Autowired
-    CityService cityService;
 
     public HttpStatus saveOffer(SaveOfferDto offerDto) {
         Offer offer = new Offer();
@@ -57,24 +55,7 @@ public class OfferService {
     public Offer findById(Long offerId){
         return offerRepository.findById(offerId).orElseThrow(NullPointerException::new);
     }
-//
-//    public HttpStatus updateOffer(long offerId,SaveOfferDto updateDto){
-//        try{
-//            findById(offerId);
-//        }catch (NullPointerException ex){
-//            return HttpStatus.NOT_FOUND;
-//        }
-//        Offer updatedOffer = findById(offerId);
-//        updatedOffer.setId(offerId);
-//
-//        if(updateDto.getCompanyName()!=null)updatedOffer.setCompanyName(updateDto.getCompanyName());
-//        if(updateDto.getCategory()!=null)updatedOffer.setCategory(updateDto.getCategory());
-//        if(updateDto.getPositions()!=null)updatedOffer.setPosition(updateDto.getPositions());
-//        if(updateDto.getCategory()!=null)updatedOffer.setCategory(updateDto.getCategory());
-//
-//        offerRepository.save(updatedOffer);
-//        return HttpStatus.OK;
-//    }
+
 
 
     public List<Offer> searchOffer(SearchOfferDto filter){
