@@ -11,11 +11,10 @@ import java.util.Set;
 @Setter
 public class UserSignUpDto {
 
-    private String firstName;
-    private String LastName;
+    private String companyName;
+    private String address;
     private String password;
     private String district;
-    private String city;
     private String contactNumber;
     private String email;
     private List<String> role;

@@ -16,15 +16,13 @@ public class User {//(mappedBy = "category", cascade = CascadeType.ALL, orphanRe
     @Id
     @GeneratedValue
     long id;
-    private String firstName;
-    private String lastName;
+    private String companyName;
+    private String address;
     @JsonIgnore
     private String password;
     //@JsonIgnore
     @ManyToOne
     private District district;
-    @ManyToOne
-    private City city;
     private String contactNumber;
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles",
@@ -39,5 +37,6 @@ public class User {//(mappedBy = "category", cascade = CascadeType.ALL, orphanRe
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Offer> reportedOffers;
     String username;
+
 
 }

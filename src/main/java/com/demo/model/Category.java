@@ -1,5 +1,5 @@
 package com.demo.model;
 
-public enum DeviceCategory {
+public enum Category {
     IPHONE, IPAD, IMAC, MACBOOK, WATCH, ACCESSORIES
 }

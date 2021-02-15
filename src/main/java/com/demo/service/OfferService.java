@@ -7,17 +7,22 @@ import com.demo.model.OfferStatus;
 import com.demo.model.RedList;
 import com.demo.repository.OfferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OfferService {
@@ -31,22 +36,18 @@ public class OfferService {
     RedListService redListService;
     @Autowired
     DistrictService districtService;
-    @Autowired
-    CityService cityService;
 
     public HttpStatus saveOffer(SaveOfferDto offerDto) {
         Offer offer = new Offer();
-        offer.setModelName(offerDto.getModelName());
+        offer.setCompanyName(offerDto.getCompanyName());
         offer.setCategory(offerDto.getCategory());
-        offer.setConditionCategory(offerDto.getConditionCategory());
+        offer.setCategory(offerDto.getCategory());
         offer.setDescription(offerDto.getDescription());
-        offer.setPrice(offerDto.getPrice());
         offer.setPhoto(offerDto.getPhoto());
-        offer.setContactNumber1(offerDto.getContactNumber1());
-        offer.setContactNumber2(offerDto.getContactNumber2());
         offer.setDistrict(districtService.findDistrictByDistrictName(offerDto.getDistrict()));
-        offer.setCity(cityService.findCityByCityName(offerDto.getCity()));
         offer.setUser(userService.findById(offerDto.getUser()));
+        offer.setPostedDate(offerDto.getPostedDate());
+        offer.setExpirationDate(offerDto.getExpirationDate());
         if (offerRepository.save(offer) != null)
             return HttpStatus.OK;
         return HttpStatus.BAD_REQUEST;
@@ -66,14 +67,11 @@ public class OfferService {
         Offer updatedOffer = findById(offerId);
         updatedOffer.setId(offerId);
 
-        if(updateDto.getModelName()!=null)updatedOffer.setModelName(updateDto.getModelName());
+        if(updateDto.getCompanyName()!=null)updatedOffer.setCompanyName(updateDto.getCompanyName());
         if(updateDto.getCategory()!=null)updatedOffer.setCategory(updateDto.getCategory());
         if(updateDto.getDescription()!=null)updatedOffer.setDescription(updateDto.getDescription());
-        if(updateDto.getConditionCategory()!=null)updatedOffer.setConditionCategory(updateDto.getConditionCategory());
-        if(updateDto.getPrice()!=0.0)updatedOffer.setPrice(updateDto.getPrice());
-        if(updateDto.getCity()!=null)updatedOffer.setCity(cityService.findCityByCityName(updateDto.getCity()));
-        if(updateDto.getContactNumber1()!=0)updatedOffer.setContactNumber1(updateDto.getContactNumber1());
-        if(updateDto.getContactNumber2()!=0)updatedOffer.setContactNumber2(updateDto.getContactNumber2());
+        if(updateDto.getCategory()!=null)updatedOffer.setCategory(updateDto.getCategory());
+        if(updateDto.getExpirationDate()!=null)updatedOffer.setExpirationDate(updateDto.getExpirationDate());
 
         offerRepository.save(updatedOffer);
         return HttpStatus.OK;
@@ -104,15 +102,21 @@ public class OfferService {
                     predicates.add(cb.equal(root.get("conditionCategory"),filter.getConditionCategory()));
                 }
                 if(filter.getDistrict()!= null){
-                    predicates.add(cb.equal(root.get("location"),districtService.findDistrictByDistrictName(filter.getDistrict())));
+                    predicates.add(cb.equal(root.get("district"),districtService.findDistrictByDistrictName(filter.getDistrict())));
                 }
-                if(filter.getCity()!= null){
-                    predicates.add(cb.equal(root.get("location"),cityService.findCityByCityName(filter.getCity())));
-                }
+
+//                TypedQuery<Object> typedQuery=cb.createQuery();;
+
                 return cb.and(predicates.toArray(new Predicate[0]));
             }
         });
-        return offers;
+        switch (filter.getSortedBy()){
+            case "Newest first": return offers.stream().sorted(Comparator.comparing(Offer::getPostedDate).reversed()).collect(Collectors.toList());
+            case "Oldest first": return offers.stream().sorted(Comparator.comparing(Offer::getPostedDate)).collect(Collectors.toList());
+
+
+        }
+        return offers.stream().sorted(Comparator.comparing(Offer::getPostedDate)).collect(Collectors.toList());
     }
     public void deleteOffer(long offerId){
         offerRepository.delete(findById(offerId));

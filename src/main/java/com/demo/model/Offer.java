@@ -16,21 +16,16 @@ public class Offer {
     @Id
     @GeneratedValue
     private long id;
-    private String modelName;
+    private String companyName;
     private String description;
-    private DeviceCategory category;
-    private ConditionCategory conditionCategory;
-    private double price;
+    private Category category;
+    private WorkingNature workingNature;
     @ManyToOne
     private User user;
-    //@JsonIgnore
-    @ManyToOne
-    private City city;
-    private int contactNumber1;
-    private int contactNumber2;
     private String photo;
     private int viewCount;
     private LocalDateTime postedDate;
+    private LocalDateTime expirationDate;
     private OfferStatus offerStatus;
     @ManyToOne
     private District district;
@@ -38,28 +33,24 @@ public class Offer {
     @OneToMany(mappedBy = "offer")
     private List<ReportOffer> reports;
 
-    public Offer(long id, String modelName, String description, DeviceCategory category, ConditionCategory conditionCategory, double price, User user,District district, int contactNumber1, int contactNumber2, String photo, int viewCount, LocalDateTime postedDate, OfferStatus offerStatus, City city) {
+    public Offer(long id, String companyName, String description,LocalDateTime expirationDate, Category category, WorkingNature workingNature, User user, String photo, int viewCount, LocalDateTime postedDate, OfferStatus offerStatus, District district, List<ReportOffer> reports) {
         this.id = id;
-        this.modelName = modelName;
+        this.companyName = companyName;
         this.description = description;
         this.category = category;
-        this.conditionCategory = conditionCategory;
-        this.price = price;
+        this.workingNature = workingNature;
         this.user = user;
-        List<Offer> offerList = user.getOffers();
-        offerList.add(this);
-        user.setOffers(offerList);
-        this.city = city;
-        this.district = district;
-        this.contactNumber1 = contactNumber1;
-        this.contactNumber2 = contactNumber2;
         this.photo = photo;
         this.viewCount = viewCount;
         this.postedDate = postedDate;
         this.offerStatus = offerStatus;
         this.district = district;
+        this.reports = reports;
+        this.expirationDate = expirationDate;
+        List<Offer> offerList = user.getOffers();
+        offerList.add(this);
+        user.setOffers(offerList);
     }
-
     public Offer() {
     }
 }

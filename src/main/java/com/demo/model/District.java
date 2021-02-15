@@ -20,9 +20,6 @@ public class District {
     String districtName;
     @JsonIgnore
     @OneToMany(mappedBy = "district")
-    List<City> cities;
-    @JsonIgnore
-    @OneToMany(mappedBy = "district")
     List<Offer> offers;
     @JsonIgnore
     @OneToMany
