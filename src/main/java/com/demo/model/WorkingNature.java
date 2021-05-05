@@ -1,5 +1,5 @@
 package com.demo.model;
 
 public enum WorkingNature {
-    FULL_TIME, PART_TIME
+    FULL_TIME, PART_TIME,TEMPORARY,INTERNSHIP
 }

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("94mart/red-list")
+@RequestMapping("career/red-list")
 public class ReportUserController {
     @Autowired
     RedListService redListService;

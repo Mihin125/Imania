@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("94mart/offer")
+@RequestMapping("career/offer")
 public class OfferController {
     @Autowired
     OfferService offerService;

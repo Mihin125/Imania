@@ -32,26 +32,26 @@ public class UserService {
         User existingUser = findByEmail(userDto.getEmail());
         if(blackListService.findByEmail(userDto.getEmail())!=null)return HttpStatus.FORBIDDEN;
         if (existingUser!=null)return HttpStatus.BAD_REQUEST;
-        if(userDto.getCompanyName()!=null &&
-                userDto.getAddress()!=null &&
-                userDto.getDistrict()!=null&&
-                userDto.getContactNumber()!=null &&
-                userDto.getPassword()!= null ) {
+//        if(userDto.getCompanyName()!=null &&
+//                userDto.getDistrict()!=null&&
+//                userDto.getContactNumber()!=null &&
+//                userDto.getPassword()!= null ) {
 
                 User user=new User();
                 user.setCompanyName(userDto.getCompanyName());
-                user.setAddress(user.getAddress());
-                user.setDistrict(districtService.findDistrictByDistrictName(userDto.getDistrict()));
+//                user.setDistrict(districtService.findDistrictByDistrictName(userDto.getDistrict()));
                 user.setRoles(userDto.getRole().stream().map(x->userRoleService.findByName(x)).collect(Collectors.toList()));
                 BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder(12);
                 String password =bCryptPasswordEncoder.encode(userDto.getPassword());
                 user.setPassword(password);
                 user.setContactNumber(userDto.getContactNumber());
                 user.setEmail(userDto.getEmail());
+                user.setUsername(userDto.getEmail());
                 if (userRepository.save(user) != null) {
                     return HttpStatus.OK;
                 }
-        }return HttpStatus.BAD_REQUEST;
+//        }
+        return HttpStatus.BAD_REQUEST;
     }
 
     public HttpStatus updateUser(long userId,UserSignUpDto updateUserDto){
@@ -62,7 +62,6 @@ public class UserService {
         }
         User user = findById(userId);
         if(updateUserDto.getCompanyName()!=null)user.setCompanyName(updateUserDto.getCompanyName());
-        if(updateUserDto.getAddress()!=null)user.setAddress(updateUserDto.getAddress());
         if(updateUserDto.getPassword()!=null)user.setPassword(updateUserDto.getPassword());
         if(updateUserDto.getContactNumber()!=null)user.setContactNumber(updateUserDto.getContactNumber());
         if(updateUserDto.getDistrict()!=null)user.setDistrict(districtService.findDistrictByDistrictName(updateUserDto.getDistrict()));
